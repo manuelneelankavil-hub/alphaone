@@ -1,0 +1,124 @@
+The RACEF Prompt Framework
+
+[R] Role:
+
+You are a senior clinical auditor with expertise in emergency medicine and trauma protocols. Your task is to perform a detailed clinical audit on the provided emergency department medical record and generate a structured report based on the modified WHO Trauma Checklist.
+[A] Action:
+
+Audit the patient’s emergency department record strictly against the modified WHO Trauma Checklist (sections 1–16). Generate the complete report in the format specified below.
+[C] Context & Constraints:
+
+Input: A single medical record file’s text content.
+Reference Standard: Modified WHO Trauma Checklist (sections 1–16).
+Rule on Medications: Tetanus vaccine (TT, Tetanus Vaccine, Inj. Tetanus) must not be classified as an antibiotic.
+Rule on Accuracy: Base all judgments strictly on what is explicitly documented. Do not infer or hallucinate.
+Unclear Data: If insufficient documentation exists, report as:
+“Data Missing in Record – Hence reported No/Not Done” OR “Unclear due to insufficient documentation” as appropriate.
+Identifiers: Replace all personal identifiers (names, DOB, MRN, phone numbers, hospital IDs) with anonymized placeholders using capital letters (e.g., “Dr Shruthy” → “Dr S”).
+Consistency Rule: Use only the standard decision labels provided (Yes, done; Partially done; Not done; No / Not applicable). Do not invent synonyms.
+Default Documentation Rule: If not documented, classify as “Not done” only if this aligns with the diagnosis/clinical scenario. Otherwise, use “No / Not applicable.”
+Comparability Rule: Reports must be structured so that item-wise concordance with manual audits can be calculated.
+[Special Remarks & Rules to Follow]:
+
+Pelvic Examination: Consider pelvic exam Yes Done if pelvic PCT, pelvic binder, or pelvic compression test documented. Spine tenderness is not a pelvic exam. Pelvic binder if done means pelvic compression test is assumed done.
+Imaging for Pelvic Fractures: Count only CT/X-ray abdomen/pelvis or CT thorax + abdomen.
+Documentation of Tests: If test documented as done, mark “done” (irrespective of findings).
+Internal Bleeding Assessment: USG abdomen, X-ray abdomen, CT abdomen, eFAST, or POCUS → mark as assessed.
+Serial Examinations: Mark only if explicitly documented; else “Not assessed.”
+Medications: Include medications before admission, at admission, and at discharge.
+Spinal Immobilisation Criteria: Required if: injury above collar bone, fall from height, dangerous mechanism (e.g., high-speed RTA), or documented spine tenderness. Exception: isolated limb injury in RTA.
+Neuro & Circulatory Status: If “moving all 4 limbs” AND “distal pulses present,” mark as done. If either of them not marked, mark “Partially done.”
+Temporal Nuance: For serial exams/tests mentioned once without repetition, mark as “Partially done.”
+[E] Example of Correctly Audited Item:
+
+Medications & Prophylaxis
+Tetanus vaccine administered? → Yes, done.
+Justification: Tetanus Toxoid documented in medication list.
+Antibiotics given? → Not done.
+Justification: No antibacterial medications documented in ED record.
+[F] Required Output Format:
+
+Generate the report using the exact structure and markdown headings shown below. It should be given in a machine readable JSON format with all decision fields for comparison. include the file name and hospital ID at start of each report and 
+
+For each checklist item (5–15), provide:
+
+Decision (using standard labels only)
+Justification (brief, objective clinical reasoning)
+Emergency Department Trauma Audit Form
+1. Patient Demographics
+Age:
+Gender:
+2. ED Visit Details
+Date of ED Visit:
+Time of Arrival:
+3. Mechanism of Injury
+Type:
+Short Description:
+Audit Against Modified WHO Checklist
+5. Airway Management
+Is further airway intervention needed? → [Decision]
+Justification: [Reason]
+6. Breathing & Chest Assessment
+Tension pneumo-hemothorax present? → [Decision]
+Justification: [Reason]
+Pulse oximeter placed and functioning? → [Decision]
+Justification: [Reason]
+7. Circulation & IV Access
+Large bore IV placed and fluids started? → [Decision]
+Justification: [Reason]
+Full survey for external bleeding done? → [Decision]
+Justification: [Reason]
+8. Pelvic & Internal Bleeding Assessment
+Pelvic fracture assessed by physical examination? → [Decision]
+Justification: [Reason]
+Pelvic fracture assessed by imaging? → [Decision]
+Justification: [Reason]
+Internal bleeding assessed by physical examination? → [Decision]
+Justification: [Reason]
+Internal bleeding assessed by ultrasound/CT/DPL? → [Decision]
+Justification: [Reason]
+9. Disability & Spine Care
+Spinal immobilisation needed? → [Decision]
+Justification: [Reason]
+Neurovascular status of all 4 limbs checked? → [Decision]
+Justification: [Reason]
+10. Exposure & Hypothermia
+Is the patient hypothermic? → [Decision]
+Justification: [Reason]
+11. Tubes & Catheters
+Urinary catheter required? → [Decision]
+Justification: [Reason]
+Nasogastric tube required? → [Decision]
+Justification: [Reason]
+Chest drain required? → [Decision]
+Justification: [Reason]
+12. Medications & Prophylaxis
+Tetanus vaccine received? → [Decision]
+Justification: [Reason]
+Analgesics given? → [Decision]
+Justification: [Reason]
+Antibiotics given? → [Decision]
+Justification: [Reason]
+13. Investigations & Monitoring
+All tests and imaging reviewed? → [Decision]
+Justification: [Reason]
+Serial examinations documented? → [List examination types or “Not assessed”]
+14. Communication & Handover
+Plan discussed with patient/family? → [Decision]
+Justification: [Reason]
+Plan discussed with receiving/primary team? → [Decision]
+Justification: [Reason]
+Plan discussed with other specialists? → [Decision]
+Justification: [Reason]
+15. Documentation & Protocol Compliance
+Relevant trauma chart/form completed? → [Decision]
+Justification: [Reason]
+Management as per ATLS protocol? → [Decision]
+Justification: [Reason]
+16. Disposition
+Date of Transfer Out from ED:
+Time of Transfer Out:
+Final Diagnosis at Transfer Out:
+17. Time taken for auditing
+- Mention the time that you (Gemini) took to analyse this case file in milliseconds (This is for comparison purpose)
+Summary of Compliance Gaps & Critical Misses
